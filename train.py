@@ -7,7 +7,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, random_split, Subset
 import numpy as np
-from torchviz import make_dot
 import matplotlib.pyplot as plt
 from tensorboardX import SummaryWriter
 

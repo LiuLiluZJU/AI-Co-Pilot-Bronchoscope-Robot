@@ -1,6 +1,6 @@
 # AI Co-pilot Bronchoscope Robot — Official PyTorch Implementation
 
-by Jingyu Zhang, Lilu Liu, Pingyu Xiang, Qin Fang, Xiuping Nie, Honghai Ma, Jian Hu, Rong Xiong, Yue Wang, Haojian Lu.
+by Jingyu Zhang^+^, Lilu Liu^+^, Pingyu Xiang, Qin Fang, Xiuping Nie, Honghai Ma, Jian Hu, Rong Xiong, Yue Wang, Haojian Lu.
 
 <!-- &#x26A0; **More details of this repository are COMING SOON!** -->
 
@@ -16,6 +16,9 @@ Bronchoscopy is a critical diagnostic and therapeutic tool in managing lung dise
 ### Prerequisites
 * Python 3.6.2
 * PyTorch 1.9.1 and torchvison (https://pytorch.org/)
+* VTK 8.2.0
+* Pyrender 0.1.45
+* PyBullet 3.2.2
 * CUDA 10.2
 
 
@@ -31,12 +34,17 @@ Necessary Python packages can be installed by
 pip install -r requirements.txt
 ```
 
-## Train
+### Data
+
+### Train
 ```
 > python train.py
 ```
-## Test
+
+### Test
 ```
 > python test.py
 ```
 More details are coming soon!
+
+## Results
