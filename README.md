@@ -47,26 +47,18 @@ pip install -r requirements.txt
 ```
 
 Visualization and interaction GUI in PyBullet:
-<img src="figs/sim1.png#pic_left" alt="avatar" style="zoom:40%;" />
-<img src="figs/sim2.png#pic_left" alt="avatar" style="zoom:40%;" />
+<img src="figs/sim.png#pic_left" alt="avatar" style="zoom:40%;" />
 User provide discrete huamn commands (left, right, up, down, forward) to control the simulated bronchocope robot to safely instert in bronchus.
 
 ## Results
 
 ### Image translation (structure-preserving domain adaptation)
-<img src="figs/DA.png#pic_left" alt="avatar" style="zoom:100%;" />
+<img src="figs/DA.png#pic_left" alt="avatar" style="zoom:200%;" />
 
 ### Simulation
-<img src="figs/simulation1.png#pic_left" alt="avatar" style="zoom:100%;" />
-<img src="figs/simulation2.png#pic_left" alt="avatar" style="zoom:100%;" />
+<img src="figs/simulation1.png#pic_left" alt="avatar" style="zoom:100%;" /> <img src="figs/simulation2.png#pic_left" alt="avatar" style="zoom:100%;" />
 
 ### In-vitro
-<video id="video" controls="" preload="none" poster="封面">
-      <source id="mp4" src="figs/ms_33.mp4" type="video/mp4">
-</videos>
-<video id="video" controls="" preload="none" poster="封面">
-      <source id="mp4" src="figs/ai_33.mp4" type="video/mp4">
-</videos>
-
+<img src="figs/invirtro.png#pic_left" alt="avatar" style="zoom:200%;" />
 ### In-vivo
-
+<img src="figs/invivo.png#pic_left" alt="avatar" style="zoom:200%;" />
