@@ -1,6 +1,6 @@
 # AI Co-pilot Bronchoscope Robot — Official PyTorch Implementation
 
-by Jingyu Zhang^+^, Lilu Liu^+^, Pingyu Xiang, Qin Fang, Xiuping Nie, Honghai Ma, Jian Hu, Rong Xiong, Yue Wang, Haojian Lu.
+by Jingyu Zhang, Lilu Liu, Pingyu Xiang, Qin Fang, Xiuping Nie, Honghai Ma, Jian Hu, Rong Xiong, Yue Wang, Haojian Lu.
 
 <!-- &#x26A0; **More details of this repository are COMING SOON!** -->
 
@@ -45,6 +45,7 @@ pip install -r requirements.txt
 ```
 > python test.py
 ```
-More details are coming soon!
 
 ## Results
+
+More details are coming soon!
