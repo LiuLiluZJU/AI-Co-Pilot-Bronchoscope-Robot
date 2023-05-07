@@ -38,14 +38,35 @@ pip install -r requirements.txt
 
 ### Train
 ```
-> python train.py
+> python train.py  --dataset-dir YOUR_AIRWAY_AND_CENTERLINE_DIR
 ```
 
 ### Test
 ```
-> python test.py
+> python test.py --val-dataset YOUR_AIRWAY_AND_CENTERLINE_DIR  --model-dir YOUR_CHECK_POINT_DIR ----load-epoch EPOCH_COUNT
 ```
+
+Visualization and interaction GUI in PyBullet:
+<img src="figs/sim1.png#pic_left" alt="avatar" style="zoom:40%;" />
+<img src="figs/sim2.png#pic_left" alt="avatar" style="zoom:40%;" />
+User provide discrete huamn commands (left, right, up, down, forward) to control the simulated bronchocope robot to safely instert in bronchus.
 
 ## Results
 
-More details are coming soon!
+### Image translation (structure-preserving domain adaptation)
+<img src="figs/DA.png#pic_left" alt="avatar" style="zoom:100%;" />
+
+### Simulation
+<img src="figs/simulation1.png#pic_left" alt="avatar" style="zoom:100%;" />
+<img src="figs/simulation2.png#pic_left" alt="avatar" style="zoom:100%;" />
+
+### In-vitro
+<video id="video" controls="" preload="none" poster="封面">
+      <source id="mp4" src="figs/ms_33.mp4" type="video/mp4">
+</videos>
+<video id="video" controls="" preload="none" poster="封面">
+      <source id="mp4" src="figs/ai_33.mp4" type="video/mp4">
+</videos>
+
+### In-vivo
+
