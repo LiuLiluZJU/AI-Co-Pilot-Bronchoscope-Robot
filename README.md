@@ -53,7 +53,7 @@ User provide discrete huamn commands (left, right, up, down, forward) to control
 ## Results
 
 ### Image translation (structure-preserving domain adaptation)
-<img src="figs/DA.png#pic_left" alt="avatar" style="zoom:200%;" />
+<img src="figs/DA.png#pic_left" alt="avatar" style="zoom:100%;" />
 
 ### Simulation
 <img src="figs/simulation1.png#pic_left" alt="avatar" style="zoom:100%;" /> <img src="figs/simulation2.png#pic_left" alt="avatar" style="zoom:100%;" />
