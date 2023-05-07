@@ -59,6 +59,6 @@ User provide discrete huamn commands (left, right, up, down, forward) to control
 <img src="figs/simulation1.png#pic_left" alt="avatar" style="zoom:100%;" /> <img src="figs/simulation2.png#pic_left" alt="avatar" style="zoom:100%;" />
 
 ### In-vitro
-<img src="figs/invirtro.png#pic_left" alt="avatar" style="zoom:200%;" />
+<img src="figs/invirtro.png#pic_left" alt="avatar" style="zoom:100%;" />
 ### In-vivo
-<img src="figs/invivo.png#pic_left" alt="avatar" style="zoom:200%;" />
+<img src="figs/invivo.png#pic_left" alt="avatar" style="zoom:100%;" />
