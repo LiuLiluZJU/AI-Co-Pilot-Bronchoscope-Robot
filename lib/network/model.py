@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import matplotlib.pyplot as plt
 import numpy as np
 
-import resnet_backbone
+from . import resnet_backbone
 from torchvision.models import resnet34
 
 

@@ -10,10 +10,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tensorboardX import SummaryWriter
 
-from model import BranchedCIMNetWithDepth, BranchedCIMNetWithDepthAngle, CIMNet, BranchedCIMNet, ResnetGenerator_our, fixedBranchedCIMNetWithDepthAngle
-from onlineSimulation_with_depth_transfer_angle_disctrl import onlineSimulationWithNetwork
-from dataset import AlignDataSet, AlignDataSetDagger, AlignDataSetDaggerAug, AlignDataSetDaggerWithDepthAugAngle, AlignDataSetSplit, AlignDataSetDaggerWithDepthAug
-from utils import get_gpu_mem_info, get_transform
+from lib.network.model import BranchedCIMNetWithDepth, BranchedCIMNetWithDepthAngle, CIMNet, BranchedCIMNet, ResnetGenerator_our, fixedBranchedCIMNetWithDepthAngle
+from lib.engine.onlineSimulation import onlineSimulationWithNetwork
+from lib.dataset.dataset import AlignDataSetDaggerWithDepthAugAngle
+from lib.utils import get_gpu_mem_info, get_transform
 
 
 def get_args():
@@ -23,7 +23,7 @@ def get_args():
     parser.add_argument('-de', '--decay-epochs', dest='decay_epochs', metavar='DE', type=int, default=2000, help='Number of decay epochs')
     parser.add_argument('-b', '--batch-size', dest='batchsize', metavar='B', type=int, default=64, help='Batch size')
     parser.add_argument('-l', '--learning-rate', dest='lr', metavar='LR', type=float, default=1e-4, help='Learning rate')
-    parser.add_argument('-f', '--load', dest='load', type=bool, default=True, help='Load model from a .pth file')
+    parser.add_argument('-f', '--load', dest='load', type=bool, default=False, help='Load model from a .pth file')
     parser.add_argument('-fe', '--load-epoch', dest='load_epoch', type=int, default=229, help='Load model from which epoch')
     parser.add_argument('-s', '--scale', dest='scale', type=float, default=0.5, help='Downscaling factor of the images')
     parser.add_argument('-t', '--tensorboard', dest='tensorboard', type=bool, default=True, help='Record data in tensorboard')

@@ -23,11 +23,8 @@ from pyrender import IntrinsicsCamera, PerspectiveCamera,\
                      Primitive, Mesh, Node, Scene,\
                      Viewer, OffscreenRenderer, RenderFlags
 
-from camera import fixedCamera
-# from extractCenterline import extractCenterline, ExtractCenterline
-from keyBoardEvents import getAddition, getAdditionPlain, getDirection
-from model import CIMNet
-from utils import get_gpu_mem_info, tensor2im
+from .camera import fixedCamera
+from .keyBoardEvents import getDirection
 
 
 def apply_control_pad_icon(image, direction):
@@ -450,10 +447,6 @@ class onlineSimulationWithNetwork(object):
             
             tic = time.time()
             print("self.rand_roll:", self.rand_roll)
-
-            # Get GPU memory
-            total_mem, used_mem, left_mem = get_gpu_mem_info()
-            print("total, used, left memory:", total_mem, used_mem, left_mem)
 
             p.stepSimulation()
 
