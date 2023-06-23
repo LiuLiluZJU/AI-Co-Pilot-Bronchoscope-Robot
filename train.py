@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tensorboardX import SummaryWriter
 
-from lib.network.model import BranchedCIMNetWithDepth, BranchedCIMNetWithDepthAngle, CIMNet, BranchedCIMNet, ResnetGenerator_our, fixedBranchedCIMNetWithDepthAngle
+from lib.network.model import ResnetGenerator_our, fixedBranchedCIMNetWithDepthAngle
 from lib.engine.onlineSimulation import onlineSimulationWithNetwork
 from lib.dataset.dataset import AlignDataSetDaggerWithDepthAugAngle
 from lib.utils import get_gpu_mem_info, get_transform
@@ -140,10 +140,8 @@ if __name__ == '__main__':
 
         if (epoch + 1) % 1 == 0:  # online validation and update
             with torch.no_grad():
-                # random_index = np.random.choice([26, 27, 28, 41, 54, 58, 61, 63, 72, 74, 81])
                 random_index = np.random.choice([1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 36, 37, 39, 41, 43, 44])
                 net_transfer.to(device=torch.device('cpu'))
-                # args.transfer_model_dir = "E:/policy-attention-gan-copy/checkpoints/bronchus12_attentiongan_AtoB_add_depth/{}_net_G_A.pth".format(random_index)
                 args.transfer_model_dir = "E:/policy-attention-gan-copy/checkpoints/bronchus14_attentiongan_AtoB_add_depth2/{}_net_G_A.pth".format(random_index)
                 pretrained_dict = torch.load(args.transfer_model_dir, map_location=device)
                 model_dict = net_transfer.state_dict()
