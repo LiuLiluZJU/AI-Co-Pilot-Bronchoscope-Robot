@@ -49,6 +49,8 @@ pip install -r requirements.txt
 > python test.py --val-dataset YOUR_AIRWAY_AND_CENTERLINE_DIR  --model-dir YOUR_CHECK_POINT_DIR ----load-epoch EPOCH_COUNT
 ```
 
+The testing environment of Patient 3 and network model trained on Patient 1 and 2 can be downloaded in [Google Drive](https://drive.google.com/drive/folders/1426CkT9BOXoFbq_00FYvGo9EI6zXEza2?usp=sharing)
+
 Visualization and interaction GUI in PyBullet:
 <img src="figs/sim.png#pic_left" alt="avatar" style="zoom:40%;" />
 User provide discrete huamn commands (left, right, up, down, forward) to control the simulated bronchocope robot to safely instert in bronchus.
