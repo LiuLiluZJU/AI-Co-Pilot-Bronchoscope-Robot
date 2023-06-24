@@ -37,23 +37,27 @@ Necessary Python packages can be installed by
 pip install -r requirements.txt
 ```
 
-### Data
-
 ### Train
 ```
 > python train.py  --dataset-dir YOUR_AIRWAY_AND_CENTERLINE_DIR
 ```
+The training dataset can be got by emailing us with reasonable requrest.
 
 ### Test
-```
-> python test.py --val-dataset YOUR_AIRWAY_AND_CENTERLINE_DIR  --model-dir YOUR_CHECK_POINT_DIR ----load-epoch EPOCH_COUNT
-```
+The testing environment of Patient 3 and network model trained on Patient 1 and 2 can be downloaded in [Google Drive](https://drive.google.com/drive/folders/1426CkT9BOXoFbq_00FYvGo9EI6zXEza2?usp=sharing). Save /airways and chepoints folders in root direction of the repo, then type the following code for evaulating:
 
-The testing environment of Patient 3 and network model trained on Patient 1 and 2 can be downloaded in [Google Drive](https://drive.google.com/drive/folders/1426CkT9BOXoFbq_00FYvGo9EI6zXEza2?usp=sharing)
+```
+> python test.py --human
+```
 
 Visualization and interaction GUI in PyBullet:
 <img src="figs/sim.png#pic_left" alt="avatar" style="zoom:40%;" />
-User provide discrete huamn commands (left, right, up, down, forward) to control the simulated bronchocope robot to safely instert in bronchus.
+User provide discrete huamn commands (left, right, up, down, forward, i.e., H, L, I, K on keyboard) in PyBullet GUI to control the simulated bronchocope robot to safely instert in bronchus.
+
+Besides, the automatic control by our Artificial Expert Agent can be implemented by simply typing:
+```
+> python test.py
+```
 
 ## Results
 

@@ -28,7 +28,7 @@ def get_args():
     parser.add_argument('-s', '--scale', dest='scale', type=float, default=0.5, help='Downscaling factor of the images')
     parser.add_argument('-t', '--tensorboard', dest='tensorboard', type=bool, default=True, help='Record data in tensorboard')
     parser.add_argument('-v', '--validation', dest='val', type=float, default=0.2, help='Percent of the data that is used as validation (0-1)')
-    parser.add_argument('-d', '--dataset-dir', dest='dataset_dir', type=str, default="E:/pybullet_test/train_set",
+    parser.add_argument('-d', '--dataset-dir', dest='dataset_dir', type=str, default="train_set",
                         help='Path of dataset for training and validation')
     parser.add_argument('-m', '--model-dir', dest='model_dir', type=str, default="E:/cond_imitation_learning/checkpoints", 
                         help='Path of trained model for saving')
@@ -165,7 +165,7 @@ if __name__ == '__main__':
                     # online_test_centerline_index = 0
                     online_test_centerline_name = online_test_centerline_names_list[online_test_centerline_index]
                     simulator = onlineSimulationWithNetwork(args.dataset_dir, online_test_centerline_name, renderer='pyrender')
-                    _, path_centerline_error_list, path_centerline_ratio_list, _, _ = simulator.run(net, epoch, net_transfer=net_transfer, transform_func=dataset.transforms_eval, transform_func_transfer=transform_func_transfer)
+                    _, path_centerline_error_list, path_centerline_ratio_list, _, _ = simulator.run(args, net, epoch, net_transfer=net_transfer, transform_func=dataset.transforms_eval, transform_func_transfer=transform_func_transfer)
                     if args.tensorboard:
                         for index, error in enumerate(path_centerline_error_list):
                             writer.add_scalars('paths/{}'.format(online_test_centerline_name), {'{} epoch'.format(epoch): error}, global_step=int(path_centerline_ratio_list[index] * 1000))

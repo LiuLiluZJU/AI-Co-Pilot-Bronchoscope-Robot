@@ -105,19 +105,19 @@ class onlineSimulationWithNetwork(object):
     def __init__(self, dataset_dir, centerline_name, renderer=None, training=True):
         
         # Create saving folder
-        if not os.path.exists(os.path.join(dataset_dir, "centerlines_with_dagger")):
-            os.mkdir(os.path.join(dataset_dir, "centerlines_with_dagger"))
-        self.dataset_dir = dataset_dir
+        if training:
+            if not os.path.exists(os.path.join(dataset_dir, "centerlines_with_dagger")):
+                os.mkdir(os.path.join(dataset_dir, "centerlines_with_dagger"))
+            self.dataset_dir = dataset_dir
 
         # Load models
         name = centerline_name.split(" ")[0]
-        self.root_dir = "E:/pybullet_test"
-        self.bronchus_model_dir = os.path.join(self.root_dir, "Airways", "AirwayHollow_{}_simUV.obj".format(name))
-        # self.bronchus_model_dir = os.path.join(self.root_dir, "Airways", "AirwayHollow_{}.obj".format(name))
-        self.airway_model_dir = os.path.join(self.root_dir, "Airways", "AirwayModel_Peach_{}.vtk".format(name))
+        self.bronchus_model_dir = os.path.join("airways", "AirwayHollow_{}_simUV.obj".format(name))
+        # self.bronchus_model_dir = os.path.join("airways", "AirwayHollow_{}.obj".format(name))
+        self.airway_model_dir = os.path.join("airways", "AirwayModel_Peach_{}.vtk".format(name))
         self.centerline_name = centerline_name
         centerline_model_name = centerline_name.lstrip(name + " ")
-        self.centerline_model_dir = os.path.join(self.root_dir, "Airways", "centerline_models_{}".format(name), centerline_model_name + ".obj")
+        self.centerline_model_dir = os.path.join("airways", "centerline_models_{}".format(name), centerline_model_name + ".obj")
 
         p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
@@ -379,10 +379,10 @@ class onlineSimulationWithNetwork(object):
                 return cur_index
 
 
-    def run(self, net, model_dir=None, epoch=None, net_transfer=None, transform_func=None, transform_func_transfer=None, training=True):
+    def run(self, args, net, model_dir=None, epoch=None, net_transfer=None, transform_func=None, transform_func_transfer=None, training=True):
 
-        if not training:
-            saving_root = os.path.join(self.root_dir, "train_set", "test_ineria", model_dir.split("/")[-1][78:] + "-" + str(epoch))
+        if training:
+            saving_root = os.path.join("train_set", "test_ineria", model_dir.split("/")[-1][78:] + "-" + str(epoch))
             if not os.path.exists(saving_root):
                 os.mkdir(saving_root)
             saving_root = os.path.join(saving_root, self.centerline_name)
@@ -604,10 +604,11 @@ class onlineSimulationWithNetwork(object):
                         print("key down")
             print("Direction:", direction)
 
-            # # Get direction -- Keyboard control
-            keys = p.getKeyboardEvents()
-            direction = getDirection(keys)
-            direction = np.array(direction)
+            # Get direction -- Keyboard control
+            if args.human:
+                keys = p.getKeyboardEvents()
+                direction = getDirection(keys)
+                direction = np.array(direction)
 
             # Adversial detection (check whether a point is inside the object by vtk and use the closest vertex)
             transformed_point = np.dot(np.linalg.inv(self.R_model), t - self.t_model) * 100
@@ -932,7 +933,7 @@ class onlineSimulationWithNetwork(object):
             print("Step frequency:", 1 / (toc - tic))
 
             # Save image
-            if not training:
+            if training:
                 predicted_depth = predicted_depth[0].squeeze(0).cpu().data.numpy()
                 predicted_depth[predicted_depth > 1] = 1
                 predicted_depth[predicted_depth < 0] = 0
