@@ -59,6 +59,8 @@ Besides, the automatic control by our Artificial Expert Agent can be implemented
 > python test.py
 ```
 
+<img src="figs/render1.gif" alt="a" width="210" /><img src="figs/render2.gif" alt="b" width="280" /><img src="figs/render3.gif" alt="c" width="280" />
+
 ## Results
 
 ### Image translation (structure-preserving domain adaptation)
@@ -67,8 +69,6 @@ Besides, the automatic control by our Artificial Expert Agent can be implemented
 ### Simulation
 
 <img src="figs/simulation1.png#pic_left" alt="avatar" style="zoom:100%;" /> <img src="figs/simulation2.png#pic_left" alt="avatar" style="zoom:100%;" />
-
-<img src="figs/render1.gif" alt="a" width="210" /><img src="figs/render2.gif" alt="b" width="280" /><img src="figs/render3.gif" alt="c" width="280" />
 
 ### In-vitro
 <img src="figs/invirtro.png#pic_left" alt="avatar" style="zoom:100%;" />
