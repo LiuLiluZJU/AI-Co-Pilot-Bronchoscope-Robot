@@ -59,7 +59,7 @@ Besides, the automatic control by our Artificial Expert Agent can be implemented
 > python test.py
 ```
 
-<img src="figs/render1.gif" alt="a" width="210" /><img src="figs/render2.gif" alt="b" width="280" /><img src="figs/render3.gif" alt="c" width="280" />
+<img src="figs/render1.gif" alt="a" width="220" /><img src="figs/render2.gif" alt="b" width="290" /><img src="figs/render3.gif" alt="c" width="290" />
 
 ## Results
 
