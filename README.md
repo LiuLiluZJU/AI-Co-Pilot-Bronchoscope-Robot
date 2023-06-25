@@ -65,6 +65,8 @@ Besides, the automatic control by our Artificial Expert Agent can be implemented
 <img src="figs/DA.png#pic_left" alt="avatar" style="zoom:100%;" />
 
 ### Simulation
+<img src="figs/render1.gif" alt="a" width="250" /><img src="figs/render2.gif" alt="b" width="330" /><img src="figs/render3.gif" alt="c" width="330" />
+
 <img src="figs/simulation1.png#pic_left" alt="avatar" style="zoom:100%;" /> <img src="figs/simulation2.png#pic_left" alt="avatar" style="zoom:100%;" />
 
 ### In-vitro
