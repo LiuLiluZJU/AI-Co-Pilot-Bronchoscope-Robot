@@ -41,7 +41,7 @@ pip install -r requirements.txt
 ```
 > python train.py  --dataset-dir YOUR_AIRWAY_AND_CENTERLINE_DIR
 ```
-The training dataset can be got by emailing us with reasonable requrest.
+The training dataset is not avaiable because of the privacy protection.
 
 ### Test
 The testing environment of Patient 3 and network model trained on Patient 1 and 2 can be downloaded in [Google Drive](https://drive.google.com/drive/folders/1426CkT9BOXoFbq_00FYvGo9EI6zXEza2?usp=sharing). Save /airways and /checkpoints folders in root direction of the repo, then type the following code for evaulating:
