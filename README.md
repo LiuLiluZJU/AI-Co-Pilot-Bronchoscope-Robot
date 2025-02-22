@@ -3,7 +3,7 @@
 by Jingyu Zhang, Lilu Liu, Pingyu Xiang, Qin Fang, Xiuping Nie, Honghai Ma, Jian Hu, Rong Xiong, Yue Wang, Haojian Lu.
 
 Video:
-[![AI Co-pilot Bronchoscope Robot](https://i.ytimg.com/vi/RYoUAxHxHKo/maxresdefault.jpg)](https://youtu.be/RYoUAxHxHKo "AI Co-pilot Bronchoscope Robot")
+[![AI Co-pilot Bronchoscope Robot](https://i.ytimg.com/vi/kVortC3J6oM/maxresdefault.jpg)](https://youtu.be/kVortC3J6oM "AI Co-pilot Bronchoscope Robot")
 
 <!-- &#x26A0; **More details of this repository are COMING SOON!** -->
 

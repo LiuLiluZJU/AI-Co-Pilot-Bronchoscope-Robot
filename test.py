@@ -18,6 +18,8 @@ from lib.engine.onlineSimulation import onlineSimulationWithNetwork as onlineSim
 from lib.dataset.dataset import AlignDataSetDaggerAug
 from lib.utils import get_gpu_mem_info, get_transform
 
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 np.random.seed(0)
 
 

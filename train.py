@@ -15,6 +15,8 @@ from lib.engine.onlineSimulation import onlineSimulationWithNetwork
 from lib.dataset.dataset import AlignDataSetDaggerWithDepthAugAngle
 from lib.utils import get_gpu_mem_info, get_transform
 
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 
 def get_args():
     parser = argparse.ArgumentParser(description='Train the SCNet on images and target landmarks',
@@ -30,8 +32,9 @@ def get_args():
     parser.add_argument('-v', '--validation', dest='val', type=float, default=0.2, help='Percent of the data that is used as validation (0-1)')
     parser.add_argument('-d', '--dataset-dir', dest='dataset_dir', type=str, default="train_set",
                         help='Path of dataset for training and validation')
-    parser.add_argument('-m', '--model-dir', dest='model_dir', type=str, default="E:/cond_imitation_learning/checkpoints", 
+    parser.add_argument('-m', '--model-dir', dest='model_dir', type=str, default="checkpoints", 
                         help='Path of trained model for saving')
+    parser.add_argument('--human', action='store_true', help='AI co-pilot control with human, default: Artificial Expert Agent')
     # Style transfer parameters
     parser.add_argument('--dataset_mode', type=str, default='unaligned', help='chooses how datasets are loaded. [unaligned | aligned | single | colorization]')
     parser.add_argument('--direction', type=str, default='AtoB', help='AtoB or BtoA')
@@ -44,8 +47,7 @@ def get_args():
     parser.add_argument('--preprocess', type=str, default='resize_and_crop', help='scaling and cropping of images at load time [resize_and_crop | crop | scale_width | scale_width_and_crop | none]')
     parser.add_argument('--no_flip', type=bool, default=True, help='if specified, do not flip the images for data augmentation')
     parser.add_argument('--display_winsize', type=int, default=256, help='display window size for both visdom and HTML')
-    parser.add_argument('--transfer_model_dir', dest='transfer_model_dir', type=str, default="E:/policy-attention-gan-copy/checkpoints/bronchus9_attentiongan_AtoB_add_depth2_219lab/25_net_G_A.pth",
-                        help='Path of dataset for style transfer model')
+    parser.add_argument('--transfer_model_dir', dest='transfer_model_dir', type=str, help='Path of dataset for style transfer model')
 
     return parser.parse_args()
 
@@ -69,22 +71,12 @@ if __name__ == '__main__':
 
     # Style tranfer network
     transform_func_transfer = get_transform(args)
-    # net_transfer = ResnetGenerator(input_nc=3, output_nc=3, ngf=64, norm_layer=functools.partial(nn.InstanceNorm2d, affine=False, track_running_stats=False), use_dropout=False, n_blocks=9)
     net_transfer = ResnetGenerator_our(input_nc=3, output_nc=3, ngf=64, n_blocks=9)
-    pretrained_dict = torch.load(args.transfer_model_dir, map_location=device)
-    model_dict = net_transfer.state_dict()
-    pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}  # 不必要的键去除掉
-    model_dict.update(pretrained_dict)  # 覆盖现有的字典里的条目
-    net_transfer.load_state_dict(model_dict)
-    net_transfer.to(device=device)
     net_transfer.eval()
 
     online_test_centerline_names_list = os.listdir(os.path.join(args.dataset_dir, "centerlines"))
 
-    # dataset = AlignDataSetDagger(args.dataset_dir)
     dataset = AlignDataSetDaggerWithDepthAugAngle(args.dataset_dir, train_flag=True)
-    # dataset.updateDataSet()
-    # dataset.updateSpecificCenterlineDataSet(online_test_centerline_names_list[0])
 
     optimizer = torch.optim.Adam([{'params': net.parameters()}], lr=1e-4, weight_decay=1e-8)
     mse_loss = nn.MSELoss()
@@ -111,15 +103,9 @@ if __name__ == '__main__':
             action = batch[2].to(device=device, dtype=torch.float32)
             depth = batch[3].to(device=device, dtype=torch.float32)
             predicted_action, predicted_depth = net(image, command)
-            # print("action, pred_action:", action, predicted_action)
-            # loss = mse_loss(action * 100, predicted_action * 100)  # scale value 100 for fast convergence
-            # loss_action = L1_loss(action * torch.tensor([100, 100, 100]).to(device=device, dtype=torch.float32), \
-            #                 predicted_action * torch.tensor([100, 100, 100]).to(device=device, dtype=torch.float32))  # scale value 100 for fast convergence
             loss_action = L1_loss(action * 100, predicted_action * (np.pi / 2) * 100)  # scale value 100 for fast convergence, pred action belongs to (-1, 1) and needs scaling to (-pi / 2, pi / 2)
             loss_depth = mse_loss(predicted_depth, depth)
             loss = loss_action + loss_depth * 100
-            # g = make_dot(output)
-            # g.view()
 
             optimizer.zero_grad()
             loss.backward()
@@ -140,9 +126,9 @@ if __name__ == '__main__':
 
         if (epoch + 1) % 1 == 0:  # online validation and update
             with torch.no_grad():
-                random_index = np.random.choice([1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 36, 37, 39, 41, 43, 44])
+                random_index = np.random.choice([1, 21, 41])
                 net_transfer.to(device=torch.device('cpu'))
-                args.transfer_model_dir = "E:/policy-attention-gan-copy/checkpoints/bronchus14_attentiongan_AtoB_add_depth2/{}_net_G_A.pth".format(random_index)
+                args.transfer_model_dir = "checkpoints/checkpoints_transfer/{}_net_G_A.pth".format(random_index)
                 pretrained_dict = torch.load(args.transfer_model_dir, map_location=device)
                 model_dict = net_transfer.state_dict()
                 pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}  # 不必要的键去除掉
@@ -151,28 +137,19 @@ if __name__ == '__main__':
                 net_transfer.to(device=device)
                 net_transfer.eval()
                 net.eval()
-                # for online_test_centerline_name in online_test_centerline_names_list:
-                #     simulator = onlineSimulationWithNetwork(args.dataset_dir, online_test_centerline_name, renderer='pyrender')
-                #     path_centerline_error_list, complete_ratio = simulator.run(net, epoch)
-                #     if args.tensorboard:
-                #         for index, error in enumerate(path_centerline_error_list):
-                #             writer.add_scalar('paths/{}'.format(online_test_centerline_name), error, global_step=index)
-                #         writer.add_scalar('mean_error/{}'.format(online_test_centerline_name), np.mean(path_centerline_error_list), global_step=epoch)
-                #         writer.add_scalar('complete_ratio/{}'.format(online_test_centerline_name), complete_ratio, global_step=epoch)
                 dataset_size = len(dataset)
                 while dataset_size == len(dataset):
                     online_test_centerline_index = epoch % len(online_test_centerline_names_list)
                     # online_test_centerline_index = 0
                     online_test_centerline_name = online_test_centerline_names_list[online_test_centerline_index]
                     simulator = onlineSimulationWithNetwork(args.dataset_dir, online_test_centerline_name, renderer='pyrender')
-                    _, path_centerline_error_list, path_centerline_ratio_list, _, _ = simulator.run(args, net, epoch, net_transfer=net_transfer, transform_func=dataset.transforms_eval, transform_func_transfer=transform_func_transfer)
+                    _, path_centerline_error_list, path_centerline_ratio_list, _, _ = simulator.run(args, net, epoch=epoch, net_transfer=net_transfer, transform_func=dataset.transforms_eval, transform_func_transfer=transform_func_transfer)
                     if args.tensorboard:
                         for index, error in enumerate(path_centerline_error_list):
                             writer.add_scalars('paths/{}'.format(online_test_centerline_name), {'{} epoch'.format(epoch): error}, global_step=int(path_centerline_ratio_list[index] * 1000))
                         writer.add_scalar('mean_error/{}'.format(online_test_centerline_name), np.mean(path_centerline_error_list), global_step=epoch)
                         writer.add_scalar('complete_ratio/{}'.format(online_test_centerline_name), path_centerline_ratio_list[-1], global_step=epoch)
                     dataset.updateDataSet()
-                # dataset.updateSpecificCenterlineDataSet(online_test_centerline_name)
                 train_loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=True, num_workers=0, pin_memory=True)
 
         if (epoch + 1) % 10 == 0:

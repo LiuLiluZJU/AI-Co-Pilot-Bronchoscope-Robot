@@ -285,13 +285,13 @@ class onlineSimulationWithNetwork(object):
         #                 alphaMode='OPAQUE',
         #                 roughnessFactor=0.7,
         #                 baseColorFactor=[253 / 255, 149 / 255, 158 / 255, 1])
-        # material = MetallicRoughnessMaterial(
-        #                     metallicFactor=0.1,
-        #                     alphaMode='OPAQUE',
-        #                     roughnessFactor=0.7,
-        #                     baseColorFactor=[206 / 255, 108 / 255, 131 / 255, 1])
-        # fuze_mesh = Mesh.from_trimesh(fuze_trimesh, material=material)
-        fuze_mesh = Mesh.from_trimesh(fuze_trimesh)
+        material = MetallicRoughnessMaterial(
+                            metallicFactor=0.1,
+                            alphaMode='OPAQUE',
+                            roughnessFactor=0.7,
+                            baseColorFactor=[206 / 255, 108 / 255, 131 / 255, 1])
+        fuze_mesh = Mesh.from_trimesh(fuze_trimesh, material=material)
+        # fuze_mesh = Mesh.from_trimesh(fuze_trimesh)
         spot_l = SpotLight(color=np.ones(3), intensity=0.3,
                         innerConeAngle=0, outerConeAngle=np.pi/2, range=1)
         # self.cam = IntrinsicsCamera(fx=181.9375, fy=183.2459, cx=103.0638, cy=95.4945, znear=0.000001)
@@ -382,10 +382,8 @@ class onlineSimulationWithNetwork(object):
     def run(self, args, net, model_dir=None, epoch=None, net_transfer=None, transform_func=None, transform_func_transfer=None, training=True):
 
         if training:
-            saving_root = os.path.join("train_set", "test_ineria", model_dir.split("/")[-1][78:] + "-" + str(epoch))
-            if not os.path.exists(saving_root):
-                os.mkdir(saving_root)
-            saving_root = os.path.join(saving_root, self.centerline_name)
+            print("---------------", epoch)
+            saving_root = os.path.join("train_set", "centerlines_with_dagger", self.centerline_name + "-dagger" + str(epoch))
             if not os.path.exists(saving_root):
                 os.mkdir(saving_root)
             actions_saving_dir = os.path.join(saving_root, "actions.txt")
@@ -437,6 +435,7 @@ class onlineSimulationWithNetwork(object):
             p.addUserDebugLine(self.centerlineArray[i], self.centerlineArray[i + 1], lineColorRGB=[0, 1, 0], lifeTime=0, lineWidth=3)
         
         path_length = 0
+        light_intensity = 0.3
         path_centerline_error_list = []
         path_centerline_length_list = []
         path_centerline_ratio_list = []
@@ -650,7 +649,7 @@ class onlineSimulationWithNetwork(object):
             pose = np.identity(4)
             pose[:3, 3] = t
             pose[:3, :3] = R
-            light_intensity = 0.3
+            # light_intensity = 0.3
             self.scene.clear()
             self.scene.add_node(self.fuze_node)
             spot_l = SpotLight(color=np.ones(3), intensity=light_intensity,
@@ -660,7 +659,6 @@ class onlineSimulationWithNetwork(object):
             self.scene.set_pose(spot_l_node, pose)
             self.scene.set_pose(cam_node, pose)
             rgb_img, depth_img = self.r.render(self.scene)
-            rgb_img_ori = rgb_img.copy()
             rgb_img = rgb_img[:, :, :3]
 
             # mean_intensity = np.mean(rgb_img)
@@ -715,7 +713,6 @@ class onlineSimulationWithNetwork(object):
                 self.scene.set_pose(spot_l_node, pose)
                 self.scene.set_pose(cam_node, pose)
                 rgb_img, depth_img = self.r.render(self.scene)
-                rgb_img_ori = rgb_img.copy()
                 rgb_img = rgb_img[:, :, :3]
                 mean_intensity = np.mean(rgb_img)
                 count_AE += 1
@@ -741,89 +738,91 @@ class onlineSimulationWithNetwork(object):
             #     rgb_img = np.transpose(rgb_img, axes=(2, 0, 1))
             
             # Style transfer
-            # transfer_prob = 0.3
+            transfer_prob = 0.3
             # transfer_prob = 0
-            # if training:
-            #     if net_transfer and np.random.rand() < transfer_prob:
-            #         rgb_image_PIL = Image.fromarray(np.transpose(rgb_img, axes=(1, 2, 0)))
-            #         rgb_image_tensor = transform_func_transfer(rgb_image_PIL).unsqueeze(0).to(device=self.device, dtype=torch.float32)
-            #         # plt.subplot(121)
-            #         # image_array = tensor2im(rgb_image_tensor)
-            #         # plt.imshow(image_array)
-            #         transfered_rgb_image_tensor,_, _, _, _, _, _, _, _, _, _, \
-            #         _, _, _, _, _, _, _, _, _, _, \
-            #         _, _, _, _, _, _, _, _, _ = net_transfer(rgb_image_tensor)
-            #         # image_tensor, _ = net_transfer(image_tensor)
-            #         # plt.subplot(122)
-            #         # image_array = tensor2im(transfered_rgb_image_tensor)
-            #         # plt.imshow(image_array)
-            #         # plt.show()
-            #         transfered_rgb_image_tensor = (transfered_rgb_image_tensor * 0.5 + 0.5) * 255  # denormalization
-            #         transfered_rgb_image_tensor = transfered_rgb_image_tensor / 255
-            #         rgb_img = (transfered_rgb_image_tensor * 255).cpu().data.numpy().astype(np.uint8)[0]
-            #         # rgb_img = np.transpose(rgb_img, (1, 2, 0))
-            #         # cv2.imshow("Transferd image", cv2.resize(rgb_image[:, :, ::-1], (400, 400)))
-            #     else:
-            #         # Get image with random intensity
-            #         if self.renderer == 'pyrender':
-            #             light_intensity = 0.3
-            #             self.scene.clear()
-            #             self.scene.add_node(self.fuze_node)
-            #             spot_l = SpotLight(color=np.ones(3), intensity=light_intensity,
-            #                 innerConeAngle=0, outerConeAngle=np.pi/2, range=1)
-            #             spot_l_node = self.scene.add(spot_l, pose=pose)
-            #             cam_node = self.scene.add(self.cam, pose=pose)
-            #             self.scene.set_pose(spot_l_node, pose)
-            #             self.scene.set_pose(cam_node, pose)
-            #             rgb_img, depth_img = self.r.render(self.scene)
-            #             rgb_img = rgb_img[:, :, :3]
+            if training:
+                if net_transfer and np.random.rand() < transfer_prob:
+                    rgb_image_PIL = Image.fromarray(np.transpose(rgb_img, axes=(1, 2, 0)))
+                    rgb_image_tensor = transform_func_transfer(rgb_image_PIL).unsqueeze(0).to(device=self.device, dtype=torch.float32)
+                    # plt.subplot(121)
+                    # image_array = tensor2im(rgb_image_tensor)
+                    # plt.imshow(image_array)
+                    transfered_rgb_image_tensor,_, _, _, _, _, _, _, _, _, _, \
+                    _, _, _, _, _, _, _, _, _, _, \
+                    _, _, _, _, _, _, _, _, _ = net_transfer(rgb_image_tensor)
+                    # image_tensor, _ = net_transfer(image_tensor)
+                    # plt.subplot(122)
+                    # image_array = tensor2im(transfered_rgb_image_tensor)
+                    # plt.imshow(image_array)
+                    # plt.show()
+                    transfered_rgb_image_tensor = (transfered_rgb_image_tensor * 0.5 + 0.5) * 255  # denormalization
+                    transfered_rgb_image_tensor = transfered_rgb_image_tensor / 255
+                    rgb_img = (transfered_rgb_image_tensor * 255).cpu().data.numpy().astype(np.uint8)[0]
+                    # rgb_img = np.transpose(rgb_img, (1, 2, 0))
+                    # cv2.imshow("Transferd image", cv2.resize(rgb_image[:, :, ::-1], (400, 400)))
+                else:
+                    # Get image with random intensity
+                    if self.renderer == 'pyrender':
+                        # light_intensity = 0.3
+                        self.scene.clear()
+                        self.scene.add_node(self.fuze_node)
+                        spot_l = SpotLight(color=np.ones(3), intensity=light_intensity,
+                            innerConeAngle=0, outerConeAngle=np.pi/2, range=1)
+                        spot_l_node = self.scene.add(spot_l, pose=pose)
+                        cam_node = self.scene.add(self.cam, pose=pose)
+                        self.scene.set_pose(spot_l_node, pose)
+                        self.scene.set_pose(cam_node, pose)
+                        rgb_img, depth_img = self.r.render(self.scene)
+                        rgb_img = rgb_img[:, :, :3]
 
-            #             exp_mean_intensity = np.random.randint(40, 215)
-            #             mean_intensity = np.mean(rgb_img)
-            #             count_AE = 0
-            #             min_light_intensity = 0.001
-            #             max_light_intensity = 20
-            #             while np.abs(mean_intensity - exp_mean_intensity) > 20:
-            #                 if count_AE > 1000:
-            #                     break
-            #                 if np.abs(min_light_intensity - light_intensity) < 1e-5 or np.abs(max_light_intensity - light_intensity) < 1e-5:
-            #                     break
-            #                 if mean_intensity > exp_mean_intensity:
-            #                     max_light_intensity = light_intensity
-            #                     light_intensity = (min_light_intensity + max_light_intensity) / 2
-            #                 else:
-            #                     min_light_intensity = light_intensity
-            #                     light_intensity = (min_light_intensity + max_light_intensity) / 2
-            #                 self.scene.clear()
-            #                 self.scene.add_node(self.fuze_node)
-            #                 spot_l = SpotLight(color=np.ones(3), intensity=light_intensity,
-            #                         innerConeAngle=0, outerConeAngle=np.pi/2, range=1)
-            #                 spot_l_node = self.scene.add(spot_l, pose=pose)
-            #                 cam_node = self.scene.add(self.cam, pose=pose)
-            #                 self.scene.set_pose(spot_l_node, pose)
-            #                 self.scene.set_pose(cam_node, pose)
-            #                 rgb_img, depth_img = self.r.render(self.scene)
-            #                 rgb_img = rgb_img[:, :, :3]
-            #                 mean_intensity = np.mean(rgb_img)
-            #                 count_AE += 1
-            #                 # print("Light intensity:", light_intensity)
-            #             mean_intensity = print("Mean intensity:", np.mean(rgb_img))
+                        exp_mean_intensity = np.random.randint(40, 215)
+                        mean_intensity = np.mean(rgb_img)
+                        count_AE = 0
+                        min_light_intensity = 0.001
+                        max_light_intensity = 20
+                        while np.abs(mean_intensity - exp_mean_intensity) > 20:
+                            if count_AE > 1000:
+                                break
+                            if np.abs(min_light_intensity - light_intensity) < 1e-5 or np.abs(max_light_intensity - light_intensity) < 1e-5:
+                                break
+                            if mean_intensity > exp_mean_intensity:
+                                max_light_intensity = light_intensity
+                                light_intensity = (min_light_intensity + max_light_intensity) / 2
+                            else:
+                                min_light_intensity = light_intensity
+                                light_intensity = (min_light_intensity + max_light_intensity) / 2
+                            self.scene.clear()
+                            self.scene.add_node(self.fuze_node)
+                            spot_l = SpotLight(color=np.ones(3), intensity=light_intensity,
+                                    innerConeAngle=0, outerConeAngle=np.pi/2, range=1)
+                            spot_l_node = self.scene.add(spot_l, pose=pose)
+                            cam_node = self.scene.add(self.cam, pose=pose)
+                            self.scene.set_pose(spot_l_node, pose)
+                            self.scene.set_pose(cam_node, pose)
+                            rgb_img, depth_img = self.r.render(self.scene)
+                            rgb_img = rgb_img[:, :, :3]
+                            mean_intensity = np.mean(rgb_img)
+                            count_AE += 1
+                            # print("Light intensity:", light_intensity)
+                        mean_intensity = print("Mean intensity:", np.mean(rgb_img))
 
-            #             # rgb_img = rgb_img[:, :, ::-1]
-            #             rgb_img = cv2.resize(rgb_img, (200, 200))
-            #             rgb_img = np.transpose(rgb_img, axes=(2, 0, 1))
+                        # rgb_img = rgb_img[:, :, ::-1]
+                        rgb_img = cv2.resize(rgb_img, (200, 200))
+                        rgb_img = np.transpose(rgb_img, axes=(2, 0, 1))
 
-            #             depth_img[depth_img == 0] = 0.5
-            #             depth_img[depth_img > 0.5] = 0.5
-            #             depth_img = depth_img / 0.5 * 255
-            #             depth_img = depth_img.astype(np.uint8)
-            #             depth_img = cv2.resize(depth_img, (200, 200))
-            #         else:
-            #             rgb_img, _, _ = self.camera.lookat(yaw, pitch, t, -pos_vector)
-            #             rgb_img = rgb_img[:, :, :3]
-            #             # rgb_img = rgb_img[:, :, ::-1]
-            #             rgb_img = cv2.resize(rgb_img, (200, 200))
-            #             rgb_img = np.transpose(rgb_img, axes=(2, 0, 1))
+                        depth_img[depth_img == 0] = 0.5
+                        depth_img[depth_img > 0.5] = 0.5
+                        depth_img = depth_img / 0.5 * 255
+                        depth_img = depth_img.astype(np.uint8)
+                        depth_img = cv2.resize(depth_img, (200, 200))
+                    else:
+                        rgb_img, _, _ = self.camera.lookat(yaw, pitch, t, -pos_vector)
+                        rgb_img = rgb_img[:, :, :3]
+                        # rgb_img = rgb_img[:, :, ::-1]
+                        rgb_img = cv2.resize(rgb_img, (200, 200))
+                        rgb_img = np.transpose(rgb_img, axes=(2, 0, 1))
+
+            rgb_img_ori = rgb_img.astype(np.uint8).copy()
 
             # Network inference
             if transform_func:
@@ -848,7 +847,10 @@ class onlineSimulationWithNetwork(object):
             pose_in_current_cor = np.array([pose_in_camera_cor[0], pose_in_camera_cor[2], -pose_in_camera_cor[1]])
             # pose_in_current_cor = predicted_action.squeeze(0).cpu().data.numpy() / 100
             # pos_vector = np.dot(R_current, pose_in_current_cor)
-            pos_vector = np.dot(R_current, pose_in_current_cor) * 0.8 + pos_vector_last * 0.2  # introduce inertia term
+            if training:
+                pos_vector = np.dot(R_current, pose_in_current_cor)
+            else:
+                pos_vector = np.dot(R_current, pose_in_current_cor) * 0.8 + pos_vector_last * 0.2  # introduce inertia term
             pos_vector_last = pos_vector
             # p_expert = (30 - epoch) / 30 * 0.5
             # if np.random.rand() < p_expert:
@@ -941,10 +943,10 @@ class onlineSimulationWithNetwork(object):
                 # speed = pos_vector / (toc - tic)
                 speed = (pose_gt_in_camera_cor / 1) * 100
                 position = (t - pos_vector) * 100
-                # rgb_img = np.transpose(rgb_img, axes=(1, 2, 0))
+                rgb_img_ori = np.transpose(rgb_img_ori, axes=(1, 2, 0))
                 # Show control pad
-                rgb_img = rgb_img_ori[:, :, ::-1].copy()  # RGB to BGR for saving
-                rgb_img_ori = rgb_img_ori[:, :, ::-1].copy()
+                rgb_img_ori = rgb_img_ori[:, :, ::-1].copy()  # RGB to BGR for saving
+                rgb_img = cv2.resize(rgb_img_ori, (400, 400))
                 rgb_img = apply_control_pad_icon(rgb_img, direction.tolist())
                 # Show arrows
                 intrinsic_matrix = np.array([[175 / 1.008, 0, 200],
