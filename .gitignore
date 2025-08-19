@@ -2,3 +2,7 @@
 /checkpoints
 /runs
 /train_set
+/data
+/results
+*.pyc
+__pycache__/

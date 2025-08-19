@@ -650,7 +650,7 @@ class onlineSimulationWithNetwork(object):
             pose[:3, 3] = t
             pose[:3, :3] = R
             # light_intensity = 0.3
-            self.scene.clear()
+            self.scene.clear()  
             self.scene.add_node(self.fuze_node)
             spot_l = SpotLight(color=np.ones(3), intensity=light_intensity,
                 innerConeAngle=0, outerConeAngle=np.pi/2, range=1)
@@ -658,6 +658,8 @@ class onlineSimulationWithNetwork(object):
             cam_node = self.scene.add(self.cam, pose=pose)
             self.scene.set_pose(spot_l_node, pose)
             self.scene.set_pose(cam_node, pose)
+
+            #TODO：
             rgb_img, depth_img = self.r.render(self.scene)
             rgb_img = rgb_img[:, :, :3]
 

@@ -1,7 +1,11 @@
 torch
-torchvison
-VTK==8.2.0
+torchvision
+VTK
 pyrender
 pybullet
 gym
 tensorflow
+open3d
+pandas
+matplotlib
+tensorboard
